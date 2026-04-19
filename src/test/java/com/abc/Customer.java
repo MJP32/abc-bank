@@ -27,6 +27,10 @@ public class Customer {
 		return accounts.size();
 	}
 
+	public List<Account> getAccounts() {
+		return accounts;
+	}
+
 	public double totalInterestEarned() {
 		double total = 0;
 		for (Account a : accounts)

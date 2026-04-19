@@ -1,5 +1,65 @@
-Programming Test
+ABC Bank - Spring Security learning app
 ========
+
+A small Spring Boot 3 / Spring Security 6 sample built around the existing
+`Bank` / `Customer` / `Account` domain. Use it to explore the building blocks
+of Spring Security: authentication providers, password encoding, multiple
+SecurityFilterChain beans, form login vs. stateless JWT, URL- and
+method-level authorization, CSRF, and `MockMvc` security tests.
+
+Run it
+------
+
+```bash
+mvn spring-boot:run
+# then open http://localhost:8080/
+```
+
+H2 console: `http://localhost:8080/h2-console` (JDBC URL `jdbc:h2:mem:abcbank`).
+
+### Demo accounts (password = `password`)
+
+| Username | Roles               |
+|----------|---------------------|
+| alice    | ROLE_USER           |
+| bob      | ROLE_USER           |
+| admin    | ROLE_USER, ROLE_ADMIN |
+
+### Try the form-login flow (browser)
+
+1. Visit `/dashboard` while logged out -> redirected to `/login`.
+2. Log in as `alice / password` -> redirected back to `/dashboard`.
+3. Visit `/admin` -> 403 (alice is not an admin).
+4. Log in as `admin / password` -> `/admin` works.
+
+### Try the JWT API flow (curl)
+
+```bash
+TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"alice","password":"password"}' | jq -r .token)
+
+curl -s http://localhost:8080/api/me            -H "Authorization: Bearer $TOKEN"
+curl -s http://localhost:8080/api/customers     -H "Authorization: Bearer $TOKEN"
+curl -s http://localhost:8080/api/admin/report  -H "Authorization: Bearer $TOKEN"   # 403 for alice
+```
+
+What to read
+------------
+
+| Concept                       | File                                                                                                  |
+|-------------------------------|-------------------------------------------------------------------------------------------------------|
+| Two SecurityFilterChain beans | `src/main/java/com/abc/security/SecurityConfig.java`                                                  |
+| BCrypt password encoder       | `SecurityConfig.passwordEncoder()`                                                                    |
+| `UserDetailsService` over JPA | `src/main/java/com/abc/security/user/AppUserDetailsService.java`                                       |
+| JWT issue + parse             | `src/main/java/com/abc/security/jwt/JwtService.java`                                                  |
+| JWT auth filter               | `src/main/java/com/abc/security/jwt/JwtAuthenticationFilter.java`                                     |
+| `@PreAuthorize` examples      | `src/main/java/com/abc/web/AccountApiController.java`                                                 |
+| Thymeleaf + `sec:authorize`   | `src/main/resources/templates/dashboard.html`                                                         |
+| `MockMvc` + `@WithMockUser`   | `src/test/java/com/abc/security/SecurityIntegrationTest.java`                                          |
+
+Original interview brief
+------------------------
 
 This is a dummy application to be used as part of a software development interview.
 

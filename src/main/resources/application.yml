@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: abc-bank
+
+  datasource:
+    url: jdbc:h2:mem:abcbank;MODE=LEGACY;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate.format_sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  thymeleaf:
+    cache: false
+
+# Custom config for the JWT auth used by /api/**.
+# In a real app load these from env vars or a secret manager - never commit secrets.
+app:
+  jwt:
+    # Base64-encoded HMAC-SHA256 key (32+ bytes). This is a demo key only.
+    secret: "ZGV2LW9ubHktc2VjcmV0LWtleS1mb3ItbGVhcm5pbmctc3ByaW5nLXNlY3VyaXR5LTEyMzQ1Ng=="
+    issuer: "abc-bank"
+    expiration-minutes: 60
+
+logging:
+  level:
+    org.springframework.security: INFO
