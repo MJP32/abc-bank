@@ -1,8 +1,8 @@
 package com.abc.security;
 
-import com.abc.Account;
-import com.abc.Bank;
-import com.abc.Customer;
+import com.abc.domain.Account;
+import com.abc.domain.Bank;
+import com.abc.domain.Customer;
 import com.abc.security.user.AppUser;
 import com.abc.security.user.AppUserRepository;
 import com.abc.security.user.Role;

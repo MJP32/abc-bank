@@ -1,8 +1,8 @@
 package com.abc.web;
 
-import com.abc.Account;
-import com.abc.Bank;
-import com.abc.Customer;
+import com.abc.domain.Account;
+import com.abc.domain.Bank;
+import com.abc.domain.Customer;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import org.springframework.security.access.AccessDeniedException;

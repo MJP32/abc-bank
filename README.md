@@ -1,8 +1,8 @@
 ABC Bank - Spring Security learning app
 ========
 
-A small Spring Boot 3 / Spring Security 6 sample built around the existing
-`Bank` / `Customer` / `Account` domain. Use it to explore the building blocks
+A small Spring Boot 3.5 (Java 21) / Spring Security 6 sample built around
+the existing `Bank` / `Customer` / `Account` domain (`com.abc.domain`). Use it to explore the building blocks
 of Spring Security: authentication providers, password encoding, multiple
 SecurityFilterChain beans, form login vs. stateless JWT, URL- and
 method-level authorization, CSRF, and `MockMvc` security tests.

@@ -1,4 +1,4 @@
-package com.abc;
+package com.abc.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,5 +46,11 @@ public class Bank {
             e.printStackTrace();
             return "Error";
         }
+    }
+
+    public void transferToAccount(Customer customer, Account fromAccount, Account toAccount, int amount) {
+        if (customer.getNumberOfAccounts() < 2) return;
+        fromAccount.withdraw(amount);
+        toAccount.deposit(amount);
     }
 }
