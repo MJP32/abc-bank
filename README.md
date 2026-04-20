@@ -56,7 +56,23 @@ What to read
 | JWT auth filter               | `src/main/java/com/abc/security/jwt/JwtAuthenticationFilter.java`                                     |
 | `@PreAuthorize` examples      | `src/main/java/com/abc/web/AccountApiController.java`                                                 |
 | Thymeleaf + `sec:authorize`   | `src/main/resources/templates/dashboard.html`                                                         |
-| `MockMvc` + `@WithMockUser`   | `src/test/java/com/abc/security/SecurityIntegrationTest.java`                                          |
+
+Tests organized by Spring Security concept
+------------------------------------------
+
+Each test class focuses on a single concept and documents it in the
+class-level Javadoc; method-level comments explain what each individual
+case demonstrates. Run them with `mvn test`.
+
+| Concept                                    | Test                                                                              | Style                          |
+|--------------------------------------------|-----------------------------------------------------------------------------------|--------------------------------|
+| BCrypt password encoder                    | `src/test/java/com/abc/security/PasswordEncoderTest.java`                          | pure unit                      |
+| `UserDetailsService` + `ROLE_` prefix      | `src/test/java/com/abc/security/user/AppUserDetailsServiceTest.java`               | pure unit (Mockito)            |
+| JWT issue / verify (sig, issuer, expiry)   | `src/test/java/com/abc/security/jwt/JwtServiceTest.java`                           | pure unit                      |
+| Custom `OncePerRequestFilter` for JWTs     | `src/test/java/com/abc/security/jwt/JwtAuthenticationFilterTest.java`              | pure unit (servlet mocks)      |
+| URL rules, form login, CSRF                | `src/test/java/com/abc/security/UrlAuthorizationTest.java`                         | `@SpringBootTest` + MockMvc    |
+| `@PreAuthorize` (role + SpEL owner check)  | `src/test/java/com/abc/security/MethodSecurityTest.java`                           | `@SpringBootTest` + MockMvc    |
+| End-to-end JWT login + bearer flow         | `src/test/java/com/abc/security/jwt/JwtAuthenticationFlowTest.java`                | `@SpringBootTest` + MockMvc    |
 
 Original interview brief
 ------------------------
