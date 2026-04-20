@@ -1,4 +1,4 @@
-package com.abc;
+package com.abc.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,10 @@ public class Customer {
 
     public int getNumberOfAccounts() {
         return accounts.size();
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
     }
 
     public double totalInterestEarned() {

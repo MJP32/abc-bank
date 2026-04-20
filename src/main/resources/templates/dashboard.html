@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Dashboard - ABC Bank</title>
+</head>
+<body>
+    <h1>Welcome, <span th:text="${username}">user</span></h1>
+
+    <p>Authorities:</p>
+    <ul>
+        <li th:each="a : ${authorities}" th:text="${a}">ROLE_USER</li>
+    </ul>
+
+    <p sec:authorize="hasRole('ADMIN')">
+        You are an admin. <a th:href="@{/admin}">Admin area</a>
+    </p>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Log out</button>
+    </form>
+</body>
+</html>

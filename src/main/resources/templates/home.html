@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>ABC Bank</title>
+</head>
+<body>
+    <h1>ABC Bank</h1>
+    <p>A small Spring Boot app for learning Spring Security.</p>
+    <ul>
+        <li><a th:href="@{/login}">Log in</a></li>
+        <li><a th:href="@{/dashboard}">Dashboard</a> (requires auth)</li>
+        <li><a th:href="@{/admin}">Admin</a> (requires ROLE_ADMIN)</li>
+        <li><a th:href="@{/h2-console}">H2 console</a></li>
+    </ul>
+    <h2>Demo accounts</h2>
+    <pre>
+alice / password   (ROLE_USER)
+bob   / password   (ROLE_USER)
+admin / password   (ROLE_USER, ROLE_ADMIN)
+    </pre>
+</body>
+</html>
