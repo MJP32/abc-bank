@@ -1,13 +1,30 @@
 package com.abc.domain;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
 
+@Entity
+@Table(name = "customer")
 public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
     private String name;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "customer_id")
     private List<Account> accounts;
+
+    protected Customer() {
+        this.accounts = new ArrayList<>();
+    }
 
     public Customer(String name) {
         this.name = name;

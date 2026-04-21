@@ -1,7 +1,6 @@
 package com.abc.web;
 
-import com.abc.domain.Account;
-import com.abc.domain.Bank;
+import com.abc.domain.BankService;
 import com.abc.domain.Customer;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -21,16 +20,16 @@ import java.util.Map;
  *  - Programmatic checks: comparing authentication.getName() to the resource owner
  *    (here: the customer's name) so users can only see their own accounts.
  *
- * The Bank/Customer/Account types are the original domain classes from the repo.
+ * The Customer/Account types are JPA entities persisted to H2 via BankService.
  */
 @RestController
 @RequestMapping("/api")
 public class AccountApiController {
 
-    private final Bank bank;
+    private final BankService bankService;
 
-    public AccountApiController(Bank bank) {
-        this.bank = bank;
+    public AccountApiController(BankService bankService) {
+        this.bankService = bankService;
     }
 
     public record CustomerSummary(String name, int accounts, double totalInterest) {}
@@ -49,7 +48,7 @@ public class AccountApiController {
      */
     @GetMapping("/customers")
     public List<CustomerSummary> listCustomers() {
-        return bank.getCustomers().stream()
+        return bankService.getCustomers().stream()
                 .map(c -> new CustomerSummary(c.getName(), c.getNumberOfAccounts(), c.totalInterestEarned()))
                 .toList();
     }
@@ -65,7 +64,8 @@ public class AccountApiController {
         if (!isAdmin && !auth.getName().equalsIgnoreCase(name)) {
             throw new AccessDeniedException("You may only view your own account");
         }
-        Customer c = findOrThrow(name);
+        Customer c = bankService.findCustomerByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown customer: " + name));
         return new CustomerSummary(c.getName(), c.getNumberOfAccounts(), c.totalInterestEarned());
     }
 
@@ -77,26 +77,14 @@ public class AccountApiController {
     @PostMapping("/deposit")
     @PreAuthorize("hasRole('ADMIN') or #req.customer == authentication.name")
     public Map<String, Object> deposit(@RequestBody DepositRequest req) {
-        Customer c = findOrThrow(req.customer());
-        Account first = c.getNumberOfAccounts() == 0 ? null : c.getAccounts().get(0);
-        if (first == null) {
-            throw new IllegalStateException("Customer has no accounts");
-        }
-        first.deposit(req.amount());
-        return Map.of("balance", first.sumTransactions());
+        double balance = bankService.deposit(req.customer(), req.amount());
+        return Map.of("balance", balance);
     }
 
     /** Admin-only endpoint - covered by both URL rule and method annotation. */
     @GetMapping("/admin/report")
     @PreAuthorize("hasRole('ADMIN')")
     public String adminReport() {
-        return bank.customerSummary();
-    }
-
-    private Customer findOrThrow(String name) {
-        return bank.getCustomers().stream()
-                .filter(c -> c.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown customer: " + name));
+        return bankService.customerSummary();
     }
 }

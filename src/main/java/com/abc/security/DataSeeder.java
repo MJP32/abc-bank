@@ -1,8 +1,8 @@
 package com.abc.security;
 
 import com.abc.domain.Account;
-import com.abc.domain.Bank;
 import com.abc.domain.Customer;
+import com.abc.domain.CustomerRepository;
 import com.abc.security.user.AppUser;
 import com.abc.security.user.AppUserRepository;
 import com.abc.security.user.Role;
@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.EnumSet;
 
 /**
- * Wires the legacy Bank domain as a Spring bean and seeds demo users.
+ * Seeds demo users and bank domain data into the H2 database.
  *
  * Demo accounts (password = "password" for everyone):
  *   - alice / ROLE_USER  (also a customer named "alice")
@@ -25,18 +25,20 @@ import java.util.EnumSet;
 public class DataSeeder {
 
     @Bean
-    public Bank bank() {
-        Bank bank = new Bank();
-        Customer alice = new Customer("alice").openAccount(new Account(Account.SAVINGS));
-        alice.openAccount(new Account(Account.CHECKING));
-        alice.getAccounts().get(0).deposit(1500);
+    public CommandLineRunner seedDomainData(CustomerRepository customerRepo) {
+        return args -> {
+            if (customerRepo.count() > 0) return;
 
-        Customer bob = new Customer("bob").openAccount(new Account(Account.MAXI_SAVINGS));
-        bob.getAccounts().get(0).deposit(3000);
+            Customer alice = new Customer("alice").openAccount(new Account(Account.SAVINGS));
+            alice.openAccount(new Account(Account.CHECKING));
+            alice.getAccounts().get(0).deposit(1500);
 
-        bank.addCustomer(alice);
-        bank.addCustomer(bob);
-        return bank;
+            Customer bob = new Customer("bob").openAccount(new Account(Account.MAXI_SAVINGS));
+            bob.getAccounts().get(0).deposit(3000);
+
+            customerRepo.save(alice);
+            customerRepo.save(bob);
+        };
     }
 
     @Bean

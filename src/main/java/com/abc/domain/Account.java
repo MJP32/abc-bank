@@ -1,16 +1,31 @@
 package com.abc.domain;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "account")
 public class Account {
 
     public static final int CHECKING = 0;
     public static final int SAVINGS = 1;
     public static final int MAXI_SAVINGS = 2;
 
-    private final int accountType;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private int accountType;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "account_id")
     public List<Transaction> transactions;
+
+    protected Account() {
+        this.transactions = new ArrayList<>();
+    }
 
     public Account(int accountType) {
         this.accountType = accountType;
